@@ -24,6 +24,10 @@ class info_series():
         self.data_train_name = 'states_full.pkl'
         self.states_train_name = 'data.pkl'
         
+        #информация о конфиг файлах
+        self.exp_conf_file_name = 'exp_info.dat'
+        self.series_conf_file_name = 'series_info.dat'
+        
         
         # конструктор полей
         self.path = path
@@ -147,7 +151,7 @@ class info_series():
      
     def load_info_exp(self,name,filename = 'exp_info.dat'):
         try:
-            with open(self.path + name + '\\' + filename, 'rb') as input:   
+            with open(os.path.join(self.path + name,filename), 'rb') as input:   
                 data = pickle.load(input)
         except:
             sys.exit('object can\'t load')
@@ -155,5 +159,5 @@ class info_series():
         return data
     
     def save(self,filename = 'series_info.dat'):
-        with open(self.path + filename, 'wb') as output:
+        with open(os.path.join(self.path,filename), 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)

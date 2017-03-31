@@ -24,6 +24,10 @@ class info_exp:
           u'C1',u'C2',u'C6',u'P3',u'CP5',u'CP1',u'CP2',u'CP6',u'POz']
         extend = {'description':'extend experiment info','errors':[]}
         
+        
+        #информация о конфиг файлах
+        exp_conf_file_name = 'exp_info.dat'
+        
         # информация о названиях файлов с данными
         self.data_train_name = 'data.pkl'
         self.states_train_name = 'states_full.pkl'
@@ -44,6 +48,7 @@ class info_exp:
         self.threshold = 2
         self.num_tests = 0;
         self.status = False
+        self.aligned = False
         
         
         # обновим информацию об испытании
@@ -56,6 +61,7 @@ class info_exp:
         
         print "================================================================="
         print 'Experiment status: ', self.status, '; Num tests: ', self.num_tests
+        print 'Aligned: ', self.aligned
         if(self.extend['errors']):
             print '------------------------------------------------------------------'
             print "Ошибки сборки: "
@@ -120,7 +126,7 @@ class info_exp:
             chfiles = [self.data_test_name,self.states_test_name]
             for idx,file in enumerate(glob.glob("[0-9]*_[0-9]*")):
                 
-                if(self.checkfiles(self.path + '\\' + file ,chfiles) == True):
+                if(self.checkfiles(os.path.join(self.path,file) ,chfiles) == True):
                     list_test.append(file)
             
             self.num_tests = len(list_test)
@@ -135,5 +141,5 @@ class info_exp:
             
     
     def save(self,filename = 'exp_info.dat'):
-        with open(self.path +'/'+ filename, 'wb') as output:
+        with open(os.path.join(self.path,filename), 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)

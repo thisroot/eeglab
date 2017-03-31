@@ -14,7 +14,8 @@ from EEG.info import info_exp
 class aligner_exp:
     def __init__(self,path = '.\\', fileinfo = 'exp_info.dat'):
         
-        self.__aligned = False  
+        self.__aligned = False
+        self.status = True
         self.fileinfo = fileinfo
         self.path = path
         self.info = self.__loadinfo(path, self.fileinfo)
@@ -42,40 +43,48 @@ class aligner_exp:
                     tests['states_test'] = self.__loadfile(os.path.join(self.path, item, self.info.states_test_name))
                     tests['data_test'] = self.__loadfile(os.path.join(self.path, item, self.info.data_test_name))
                     self.data['tests'].append(tests)
+        else:
+            self.status = False
                 
+    
     def align(self,shift=0,mult=500,ignore = False):
         
-        if(self.__aligned == False):
-            
-            # вычисляем границы аквтивностей
-            self.data['states_train'], items = self.__gettimegrid(self.data['states_train'])
-            self.data.update(items)
-            
-            # выравниваем активности трейнов
-            self.data['data_train'], self.data['start'], self.data['stop'], self.data['time'] = self.__redef_epoch(self.data['data_train'], self.data['states_train'],self.data['time'],shift,mult)
-            
-            
-            for idx,item in enumerate(self.data['tests']):
+        if(self.status != False):
+            if(self.__aligned == False):
+                # вычисляем границы аквтивностей
+                self.data['states_train'], items = self.__gettimegrid(self.data['states_train'])
+                self.data.update(items)
                 
-                states, items = self.__gettimegrid(self.data['tests'][idx]['states_test'])
+                # выравниваем активности трейнов
+                self.data['data_train'], self.data['start'], self.data['stop'], self.data['time'] = self.__redef_epoch(self.data['data_train'], self.data['states_train'],self.data['time'],shift,mult)
                 
                 
-                if(len(items['start']) > 1):
-                    self.data['tests'][idx]['states_test'] = states
-                    self.data['tests'][idx].update(items)
-                else:
-                    print idx,'---', len(items['start']), items['start']
+                for idx,item in enumerate(self.data['tests']):
+                    states, items = self.__gettimegrid(self.data['tests'][idx]['states_test'])
                     
-                # выравниваем активности тестов
-                self.data['tests'][idx]['data_test'], self.data['tests'][idx]['start'], self.data['tests'][idx]['stop'], self.data['tests'][idx]['time'] = self.__redef_epoch(self.data['tests'][idx]['data_test'], self.data['tests'][idx]['states_test'],self.data['tests'][idx]['time'],shift,mult)
-                
+                    if(len(items['start']) > 1):
+                        self.data['tests'][idx]['states_test'] = states
+                        self.data['tests'][idx].update(items)
+                    else:
+                        print idx,'---', len(items['start']), items['start']
+                        
+                    # выравниваем активности тестов
+                    self.data['tests'][idx]['data_test'], self.data['tests'][idx]['start'], self.data['tests'][idx]['stop'], self.data['tests'][idx]['time'] = self.__redef_epoch(self.data['tests'][idx]['data_test'], self.data['tests'][idx]['states_test'],self.data['tests'][idx]['time'],shift,mult)
+                    
+            else:
+                print "Данные уже выравнены"
+            
+            
+            self.__aligned = True;
+            self.info.labels_names[0] = u'удалено'
+            self.info.aligned = True
+            self.info.save()
+            return True
         else:
-            print "Данные уже выравнены"
-                
-        self.__aligned = True;
-        self.info.labels_names[0] = u'удалено'
+            return False
         
-        # сохраняем дамп с данными
+            
+            # сохраняем дамп с данными
         
         pass
     
@@ -132,9 +141,9 @@ class aligner_exp:
         получение информации об испытании
         """
         
-        
         print "================================================================="
         print 'Experiment status: ', self.info.status, '; Num tests: ', self.info.num_tests
+        print 'Align status: ', self.__aligned
         if(self.info.extend['errors']):
             print '------------------------------------------------------------------'
             print "Ошибки сборки: "
@@ -143,32 +152,34 @@ class aligner_exp:
             if count % 1 == 0 and count != 0:
                 print
             print '------------------------------------------------------------------'    
-        print 'Respondent name: ', self.info.resp_name
-        print 'Description:', self.info.description
-        print 'Labels_names: [', ', '.join([str(x.encode('utf-8')) for x in self.info.labels_names]),']'
-        print 'Frequency:', self.info.frequency
-        print 'Count train activities: ',  self.data['num_activities']
-        print 'Count tests activities:', '[', ', '.join([str(x['num_activities']) for x in self.data['tests']]),']'
-        print 'Time of activity:', self.data['time'][0]
         
-        print '------------------------------------------------------------------'
-        print 'Chanels_names:'
-        print '------------------------------------------------------------------'
-        for count, item in enumerate(self.info.chanels_names):
-            print item.ljust(10),
-            if count % 5 == 0 and count != 0:
-                print
-        print
-        print '------------------------------------------------------------------'
-        print 'List tests'
-        print '------------------------------------------------------------------'
-        for count, item in enumerate(self.info.list_tests):
-            print item.ljust(10),
-            if count % 2 == 0 and count != 0:
-                print
-        print
-        
-        print '=================================================================='
+        if(self.status != False):
+            print 'Respondent name: ', self.info.resp_name
+            print 'Description:', self.info.description
+            print 'Labels_names: [', ', '.join([str(x.encode('utf-8')) for x in self.info.labels_names]),']'
+            print 'Frequency:', self.info.frequency
+            print 'Count train activities: ',  self.data['num_activities']
+            print 'Count tests activities:', '[', ', '.join([str(x['num_activities']) for x in self.data['tests']]),']'
+            print 'Time of activity:', self.data['time'][0]
+            
+            print '------------------------------------------------------------------'
+            print 'Chanels_names:'
+            print '------------------------------------------------------------------'
+            for count, item in enumerate(self.info.chanels_names):
+                print item.ljust(10),
+                if count % 5 == 0 and count != 0:
+                    print
+            print
+            print '------------------------------------------------------------------'
+            print 'List tests'
+            print '------------------------------------------------------------------'
+            for count, item in enumerate(self.info.list_tests):
+                print item.ljust(10),
+                if count % 2 == 0 and count != 0:
+                    print
+            print
+            
+            print '=================================================================='
         
                 
       
