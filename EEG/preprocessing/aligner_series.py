@@ -11,7 +11,7 @@ import pickle, os, glob, sys
 import numpy as np
 from EEG.info import info_exp
 
-class aligner_exp:
+class aligner_series:
     def __init__(self,path = '.\\', fileinfo = 'exp_info.dat'):
         
         self.__aligned = False  

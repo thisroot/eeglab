@@ -25,10 +25,10 @@ class info_exp:
         extend = {'description':'extend experiment info','errors':[]}
         
         # информация о названиях файлов с данными
-        self.data_train_name = 'states_full.pkl'
-        self.states_train_name = 'data.pkl'
+        self.data_train_name = 'data.pkl'
+        self.states_train_name = 'states_full.pkl'
         self.data_test_name = 'data.pkl'
-        self.states_test_name = 'states.pkl'
+        self.states_test_name = 'states_full.pkl'
         
         
         # консруктор полей
@@ -88,15 +88,18 @@ class info_exp:
         print '=================================================================='
         
     def checkfiles(self,path,chfiles):
-        flag = False
         for x in chfiles:
+            flag = []
+            # проверить соответствие файла в наборе файлов
             for item in glob.glob(path +"\*"):
                 if x in item:
-                    flag = True
-            if(flag == True):
+                    flag.append(True)
+            
+            # если нет ни одного вхождения, то возвращаем False
+            if(True in flag):
                 continue
             else:
-                self.extend['errors'].append(u'не пройдена проверка на наличие всех файлов')
+                self.extend['errors'].append(u'не пройдена проверка на наличие всех файлов\n')
                 return False
         return True
         
@@ -107,10 +110,7 @@ class info_exp:
         @threshold - пороговое значение кол-ва тестов при котором эксперимент признается удачным
         
         """
-        
-       
-        #chfiles = [ self.data_test_name,self.data_test_name]
-        
+    
         if(self.path == False):
             print 'path not set'
         else:
@@ -126,7 +126,7 @@ class info_exp:
             self.num_tests = len(list_test)
             if(len(list_test) != 0):
                 self.list_tests = list_test
-                
+               
             chfiles = [self.data_train_name,self.states_train_name]
             if(self.num_tests > threshold) and (self.checkfiles(self.path,chfiles) == True):
                 self.status = True

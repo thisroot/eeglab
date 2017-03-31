@@ -18,7 +18,6 @@ from EEG.info import info_exp
 root = "C:\\eeg\\01exp\\"
 name = "20161210_GSH_001"
 
-
 # In[3]:
 
 
@@ -33,7 +32,7 @@ def load(path,name):
 test = info_exp(root + name)
 test.resp_name = 'Иван Иванов'
 test.description = 'Эксперимент с обратной связью'
-test.labels_names = [u'шум', u'отдых', u'левое', u'правое']
+test.labels_names = [u'шум', u'левое', u'правое', u'отдых']
 test.getinfo()
 
 
