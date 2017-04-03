@@ -19,6 +19,7 @@ class info_series():
         frequency = False
         chanels_names = []
         extend = {'description':'extend experiment info'}
+        self.status = True
         
         # информация о названиях файлов с данными
         self.data_train_name = 'states_full.pkl'
@@ -150,11 +151,12 @@ class info_series():
         print '=================================================================='
      
     def load_info_exp(self,name,filename = 'exp_info.dat'):
+        
         try:
             with open(os.path.join(self.path + name,filename), 'rb') as input:   
                 data = pickle.load(input)
         except:
-            sys.exit('object can\'t load')
+            sys.exit('object' + os.path.join(self.path + name,filename) + 'can\'t load')
              
         return data
     

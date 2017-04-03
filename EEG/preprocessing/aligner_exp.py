@@ -134,7 +134,7 @@ class aligner_exp:
                 new_stop.append(i)
                 new_time.append(ep_len - shift)
                 start +=time[event-1]
-        return new_data, new_start, new_stop, new_time
+        return np.array(new_data), np.array(new_start), np.array(new_stop), np.array(new_time)
     
     def getinfo(self):
         """
