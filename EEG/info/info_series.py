@@ -18,6 +18,8 @@ class info_series():
         labels_names = []
         frequency = False
         chanels_names = []
+        ch_types = []
+        montage = []
         extend = {'description':'extend experiment info'}
         self.status = True
         
@@ -38,6 +40,9 @@ class info_series():
         self.labels_names = (info['labels_names']  if 'labels_names' in info else  labels_names)
         self.frequency = (info['frequency'] if 'frequency' in info else  frequency)
         self.chanels_names = (info['chanels_names'] if 'chanels_names' in info else  chanels_names)
+        self.ch_types = (info['ch_types'] if 'ch_types' in info else  ch_types)
+        self.montage = (info['montage'] if 'montage' in info else  montage)
+        
         self.extend = (info['extend'] if 'extend' in info else  extend)
         
         # получение данных вложенных каталогов
@@ -106,6 +111,8 @@ class info_series():
                 self.labels_names = self.exp_info[item].labels_names
                 self.frequency = self.exp_info[item].frequency
                 self.chanels_names = self.exp_info[item].chanels_names
+                self.ch_types = self.exp_info[item].ch_types
+                self.montage = self.exp_info[item].montage
                 self.data_train_name = self.exp_info[item].data_train_name
                 self.states_train_name = self.exp_info[item].states_train_name
             self.resp_names = set(self.resp_names)
@@ -122,6 +129,7 @@ class info_series():
     
         print 'Labels_names: [', ', '.join([str(x.encode('utf-8')) for x in self.labels_names]),']'
         print 'Frequency:', self.frequency
+        print 'Type_chanels:', self.ch_types,' Montage:', self.montage
         print '------------------------------------------------------------------'
         print 'Chanels_names:'
         print '------------------------------------------------------------------'

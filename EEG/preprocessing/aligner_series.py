@@ -34,20 +34,23 @@ class aligner_series:
             
             
     def align(self,shift=0, mult=500, ignore = False, mode = 'Force', filename = 'exp_data_aligned', saveas = 'data'):
+        list_del = []
         for idx, item in enumerate(self.info.list_exp):
+            
             aligner = aligner_exp(os.path.join(self.path,item))
             flag = aligner.align(shift,mult)
             
             if(flag == True):
                 aligner.save(mode = saveas)
             else:
-                self.__delFalseExpInfo(idx)
+                list_del.append(idx)
+        self.__delFalseExpInfo(list_del)
         return True
         pass
     
     
-    def __delFalseExpInfo(self,idx):
-        self.info.list_exp.pop(idx)
+    def __delFalseExpInfo(self,list_del):
+        self.info.list_exp = [i for j, i in enumerate(self.info.list_exp) if j not in list_del]
         #self.info.save()
         #self.info = self.__loadinfo(self.path,self.fileinfo)
         pass

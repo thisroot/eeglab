@@ -23,7 +23,8 @@ class info_exp:
           u'CP4',u'TP8',u'FC1',u'FC2',u'FC6',u'P4',u'C5',
           u'C1',u'C2',u'C6',u'P3',u'CP5',u'CP1',u'CP2',u'CP6',u'POz']
         extend = {'description':'extend experiment info','errors':[]}
-        
+        ch_types = 'eeg'
+        montage = 'standard_1005'
         
         #информация о конфиг файлах
         exp_conf_file_name = 'exp_info.dat'
@@ -41,7 +42,10 @@ class info_exp:
         self.labels_names = (info['labels_names']  if 'labels_names' in info else  labels_names)
         self.frequency = (info['frequency'] if 'frequency' in info else  frequency)
         self.chanels_names = (info['chanels_names'] if 'chanels_names' in info else  chanels_names)
+        self.ch_types = (info['ch_types'] if 'ch_types' in info else  ch_types)
+        self.montage = (info['montage'] if 'montage' in info else  montage)
         self.extend = (info['extend'] if 'extend' in info else  extend)
+        
         # информация для обновления структуры каталога
         self.path = path
         self.list_tests = []
@@ -58,7 +62,6 @@ class info_exp:
         """
         получение информации об испытании
         """
-        
         print "================================================================="
         print 'Experiment status: ', self.status, '; Num tests: ', self.num_tests
         print 'Aligned: ', self.aligned
@@ -74,6 +77,7 @@ class info_exp:
         print 'Description:', self.description
         print 'Labels_names: [', ', '.join([str(x.encode('utf-8')) for x in self.labels_names]),']'
         print 'Frequency:', self.frequency
+        print 'Type_chanels:', self.ch_types,' Montage:', self.montage
         print '------------------------------------------------------------------'
         print 'Chanels_names:'
         print '------------------------------------------------------------------'

@@ -161,7 +161,7 @@ class aligner_exp:
             print 'Count train activities: ',  self.data['num_activities']
             print 'Count tests activities:', '[', ', '.join([str(x['num_activities']) for x in self.data['tests']]),']'
             print 'Time of activity:', self.data['time'][0]
-            
+            print 'Type_chanels:', self.info.ch_types,' Montage:', self.info.montage
             print '------------------------------------------------------------------'
             print 'Chanels_names:'
             print '------------------------------------------------------------------'
