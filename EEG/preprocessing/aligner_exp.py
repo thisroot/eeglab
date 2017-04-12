@@ -32,6 +32,7 @@ class aligner_exp:
             
     def __loaddata(self):
         if(self.info.status == True):
+            try:
                 self.data = {'data_train':False,'states_train':False,'tests':[]}
                 # загружаем тренировочные данные
                 self.data['states_train'] = self.__loadfile(os.path.join(self.path,self.info.states_train_name))
@@ -43,10 +44,23 @@ class aligner_exp:
                     tests['states_test'] = self.__loadfile(os.path.join(self.path, item, self.info.states_test_name))
                     tests['data_test'] = self.__loadfile(os.path.join(self.path, item, self.info.data_test_name))
                     self.data['tests'].append(tests)
-        else:
-            self.status = False
                 
-    
+            except:
+                print "ошибка загрузки данных"
+        else:
+            print "status False"
+            self.status = False
+            
+    def getdata(self,mode = 'aligned'):
+        if(mode == 'aligned'):
+            if (self.__aligned):
+                return {'data':self.data, 'info': self.info}
+            else:
+                print "Выровняйте данные или поменяйте режим getdata(mode=\"raw\")"
+        if(mode == 'raw'):
+            self.__loaddata()
+            return {'data':self.data, 'info': self.info}
+                
     def align(self,shift=0,mult=500,ignore = False):
         
         if(self.status != False):
@@ -74,7 +88,6 @@ class aligner_exp:
             else:
                 print "Данные уже выравнены"
             
-            
             self.__aligned = True;
             self.info.labels_names[0] = u'удалено'
             self.info.aligned = True
@@ -82,10 +95,7 @@ class aligner_exp:
             return True
         else:
             return False
-        
-            
             # сохраняем дамп с данными
-        
         pass
     
         

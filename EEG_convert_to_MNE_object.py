@@ -75,7 +75,7 @@ class converter_mne:
         labels.pop(u'удалено', None)
         #return mne.EpochsArray(np.array(self.obj.data['data_train']), info=self.mne_info(), events=np.array(self.train_events()),
         #                 event_id=labels)
-        return mne.Epochs(self.train_raw(),np.array(self.train_events()),event_id=labels,add_eeg_ref=False)
+        return mne.Epochs(self.train_raw(),np.array(self.train_events()),event_id=labels,add_eeg_ref=False, preload = True, tmin = 0, tmax =(self.obj.data['time'][0]-1.)/1000, baseline = None)
         pass
     
     def test_events(self,idx):
@@ -99,7 +99,7 @@ class converter_mne:
         
         #return mne.EpochsArray(np.array(self.obj.data['tests'][idx]['data_test']), info=self.mne_info(), events=np.array(self.test_events(idx)),
         #                 event_id=labels)
-        return mne.Epochs(self.test_raw(idx),np.array(self.test_events(idx)),event_id=labels, add_eeg_ref=False)
+        return mne.Epochs(self.test_raw(idx),np.array(self.test_events(idx)),event_id=labels, add_eeg_ref=False, preload = True, tmin = 0, tmax =(self.obj.data['time'][0]-1.)/1000, baseline = None)
         
     pass
         
@@ -109,12 +109,15 @@ test2  = converter_mne(test)
 epochs = test2.train_epochs()
 picks = mne.pick_types(info=test2.mne_info(), meg=False, eeg=True, misc=False)
 
-print len(test2.mne_info()['ch_names'])
 
-print test2.train_epochs()
+test2.train_epochs()
+raw = test2.train_raw()
+print raw.info
 
+Y_train = epochs.events[:,-1]
+X_train = epochs.get_data().reshape(len(Y_train), -1)
 
-
+print X_train.shape, Y_train
 
 #plt.rcParams['figure.figsize'] = 100, 10
 #epochs.plot(picks=picks, scalings='auto', show=True, block=True)
