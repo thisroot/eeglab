@@ -49,15 +49,15 @@ class converter_mne:
         
     def train_events(self):
         events = []
-        for i in range(0, len(self.obj.data['stop'])):
-            events.append([int(self.obj.data['stop'][i]),0,int(self.obj.data['states_train'][i])])
+        for i in range(0, len(self.obj.data['start'])):
+            events.append([int(self.obj.data['start'][i]),0,int(self.obj.data['states_train'][i])])
         return np.array(events)
         
     def train_epochs(self):
 
-        return mne.EpochsArray(np.array(self.obj.data['data_train']), info=self.mne_info(), events=np.array(self.train_events()),
-                         event_id=self.__get_labels())
-        #return mne.Epochs(self.train_raw(),np.array(self.train_events()),event_id=self.labels,add_eeg_ref=False, preload = True, tmin = self.tmin, tmax = self.tmax, baseline = None)
+        #return mne.EpochsArray(np.array(self.obj.data['data_train']), info=self.mne_info(), events=np.array(self.train_events()),
+        #                 event_id=self.__get_labels())
+        return mne.Epochs(self.train_raw(),np.array(self.train_events()),event_id=self.labels,add_eeg_ref=False, preload = True, tmin = self.tmin, tmax = self.tmax, baseline = None)
         #pass
     
     def test_events(self,idx):
@@ -65,8 +65,8 @@ class converter_mne:
             print idx, " out the range: ", self.num_tests - 1
             return False
         events = []
-        for i in range(0, len(self.obj.data['tests'][idx]['stop'])):
-            events.append([int(self.obj.data['tests'][idx]['stop'][i]),0,int(self.obj.data['tests'][idx]['states_test'][i])])
+        for i in range(0, len(self.obj.data['tests'][idx]['start'])):
+            events.append([int(self.obj.data['tests'][idx]['start'][i]),0,int(self.obj.data['tests'][idx]['states_test'][i])])
         return np.array(events)
     
     def test_epochs(self,idx):
@@ -74,8 +74,7 @@ class converter_mne:
             print idx, " out the range: ", self.num_tests - 1
             return False
         
-        return mne.EpochsArray(np.array(self.obj.data['tests'][idx]['data_test']), info=self.mne_info(), events=np.array(self.test_events(idx)),
-                         event_id=self.__get_labels())
-        #return mne.Epochs(self.test_raw(idx),np.array(self.test_events(idx)),event_id= self.labels, add_eeg_ref=False, preload = True, tmin = self.tmin, tmax = self.tmax, baseline = None)
+        #return mne.EpochsArray(np.array(self.obj.data['tests'][idx]['data_test']), info=self.mne_info(), events=np.array(self.test_events(idx)),
+                        # event_id=self.__get_labels())
+        return mne.Epochs(self.test_raw(idx),np.array(self.test_events(idx)),event_id= self.labels, add_eeg_ref=False, preload = True, tmin = self.tmin, tmax = self.tmax, baseline = None)
         
-    pass
