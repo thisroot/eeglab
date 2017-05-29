@@ -41,7 +41,7 @@ class aligner_series:
             flag = aligner.align(shift,mult)
             
             if(flag == True):
-                aligner.save(mode = saveas)
+                aligner.save(mode = saveas, filename = filename)
             else:
                 list_del.append(idx)
         self.__delFalseExpInfo(list_del)
